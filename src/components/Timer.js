@@ -7,6 +7,14 @@ const Timer = ({ onNewSolve, isRunning, setIsRunning }) => {
   const timerRef = useRef(null);
   const startTimeRef = useRef(0);
 
+  // Create a ref to track running state to avoid closure issues
+  const isRunningRef = useRef(false);
+  
+  // Update the ref whenever isRunning changes
+  useEffect(() => {
+    isRunningRef.current = isRunning;
+  }, [isRunning]);
+
   // Start the timer
   const startTimer = React.useCallback(() => {
     // Reset time to 0
@@ -15,6 +23,7 @@ const Timer = ({ onNewSolve, isRunning, setIsRunning }) => {
     
     // Start the timer
     setIsRunning(true);
+    isRunningRef.current = true; // Update ref immediately
     
     // Use requestAnimationFrame for smoother updates
     const updateTimer = () => {
@@ -24,13 +33,14 @@ const Timer = ({ onNewSolve, isRunning, setIsRunning }) => {
       }
       
       // Only continue updating if the timer is still running
-      if (isRunning) {
+      // Use the ref instead of the state to avoid closure issues
+      if (isRunningRef.current) {
         timerRef.current = requestAnimationFrame(updateTimer);
       }
     };
     
     timerRef.current = requestAnimationFrame(updateTimer);
-  }, [setIsRunning, isRunning]);
+  }, [setIsRunning]);
 
   // Stop the timer
   const stopTimer = React.useCallback(() => {
@@ -39,6 +49,7 @@ const Timer = ({ onNewSolve, isRunning, setIsRunning }) => {
     }
     
     setIsRunning(false);
+    isRunningRef.current = false; // Update ref immediately
     
     // Only record solves that are at least 0.5 seconds
     // (to avoid accidental triggers)

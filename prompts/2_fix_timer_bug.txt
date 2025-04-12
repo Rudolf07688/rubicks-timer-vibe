@@ -1,0 +1,3 @@
+Ok the app is working fine. Let's focus on some of the bugs. First, lets focus on the start button. When I release spacebar to start the timer, the timer doesn't actually start. 
+
+# This also then fixed the scramble-text bug.

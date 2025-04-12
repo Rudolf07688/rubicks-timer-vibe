@@ -1,3 +1,0 @@
-The app is working and looking great, however there are two small bugs:
-1. The text showing the scramble doesn't stop changing at the start, however, it stays fixed after you start the timer - it should be static before the timer starts so that I can shuffle my rubicks cude accordingly.
-2. After releasing spacebar the timer doesn't start.

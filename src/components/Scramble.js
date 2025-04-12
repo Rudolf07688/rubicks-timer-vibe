@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import './Scramble.css';
 
 const Scramble = ({ isRunning, generateNewScramble }) => {
@@ -53,23 +53,25 @@ const Scramble = ({ isRunning, generateNewScramble }) => {
     return scramble.join(' ');
   }, [isOpposite]);
 
-  // Generate a new scramble only when the timer stops (after a solve) or on initial mount
+  // Generate a new scramble only on initial mount
   useEffect(() => {
-    // On initial mount, if no scramble exists, generate one
-    if (scramble === '') {
-      const newScramble = generateScrambleSequence();
-      setScramble(newScramble);
-      
-      if (generateNewScramble) {
-        generateNewScramble(newScramble);
-      }
+    // On initial mount, generate one scramble
+    const newScramble = generateScrambleSequence();
+    setScramble(newScramble);
+    
+    if (generateNewScramble) {
+      generateNewScramble(newScramble);
     }
-  }, [scramble, generateNewScramble, generateScrambleSequence]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
   
-  // Generate a new scramble when the timer transitions from running to stopped
+  // Track previous running state to detect transitions
+  const prevRunningRef = useRef(false);
+  
+  // Generate a new scramble only when the timer transitions from running to stopped
   useEffect(() => {
     // Only generate a new scramble when the timer transitions from running to stopped
-    if (isRunning === false && scramble !== '') {
+    if (prevRunningRef.current === true && isRunning === false) {
       const newScramble = generateScrambleSequence();
       setScramble(newScramble);
       
@@ -77,7 +79,10 @@ const Scramble = ({ isRunning, generateNewScramble }) => {
         generateNewScramble(newScramble);
       }
     }
-  }, [isRunning, generateNewScramble, scramble, generateScrambleSequence]);
+    
+    // Update the previous running state
+    prevRunningRef.current = isRunning;
+  }, [isRunning, generateNewScramble, generateScrambleSequence]);
 
   return (
     <div className="scramble-container">
