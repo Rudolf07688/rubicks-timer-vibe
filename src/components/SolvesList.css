@@ -1,0 +1,146 @@
+.solves-list-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.solves-list-container h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #555;
+  text-align: center;
+}
+
+.no-solves {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+.solves-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.solve-item {
+  display: grid;
+  grid-template-columns: 50px 1fr 2fr 120px;
+  align-items: center;
+  padding: 0.8rem;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.solve-item:hover {
+  background-color: #f0f0f0;
+}
+
+.solve-number {
+  font-weight: bold;
+  color: #666;
+  text-align: center;
+}
+
+.solve-time {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.solve-scramble {
+  font-size: 0.8rem;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 1rem;
+}
+
+.solve-actions {
+  display: flex;
+  gap: 0.3rem;
+  justify-content: flex-end;
+}
+
+.solve-actions button {
+  border: none;
+  background-color: #e0e0e0;
+  color: #555;
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.solve-actions button:hover {
+  background-color: #d0d0d0;
+}
+
+.penalty-btn.active {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.dnf-btn.active {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.delete-btn {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.delete-btn:hover {
+  background-color: #f44336 !important;
+  color: #fff !important;
+}
+
+/* Styling for DNF and penalty solves */
+.solve-item.dnf .solve-time {
+  text-decoration: line-through;
+  color: #f44336;
+}
+
+.solve-item.penalty .solve-time::after {
+  content: " (+2)";
+  font-size: 0.8rem;
+  color: #ffc107;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .solve-item {
+    grid-template-columns: 40px 1fr 100px;
+    grid-template-rows: auto auto;
+  }
+  
+  .solve-scramble {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    padding: 0.3rem 0 0 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .solve-item {
+    grid-template-columns: 30px 1fr 80px;
+    padding: 0.6rem;
+  }
+  
+  .solve-time {
+    font-size: 1rem;
+  }
+  
+  .solve-actions button {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+  }
+}

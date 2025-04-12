@@ -1,0 +1,52 @@
+.timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  transition: background-color 0.3s ease;
+}
+
+.time-display {
+  font-size: 5rem;
+  font-weight: bold;
+  font-family: 'Roboto Mono', monospace;
+  margin-bottom: 1rem;
+  transition: color 0.3s ease;
+}
+
+.timer-instructions {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+/* Timer states */
+.timer.ready {
+  background-color: #f0f8ff; /* Light blue background when ready */
+}
+
+.timer.ready .time-display {
+  color: #4caf50; /* Green text when ready */
+}
+
+.timer.running .time-display {
+  color: #f44336; /* Red text when running */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .time-display {
+    font-size: 4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .time-display {
+    font-size: 3rem;
+  }
+  
+  .timer-instructions {
+    font-size: 0.8rem;
+  }
+}

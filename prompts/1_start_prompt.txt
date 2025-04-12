@@ -1,0 +1,21 @@
+I'd like you to create a simple Rubik's cube timer application using React. The app should:
+
+1. Have a clean, minimalist interface focused on the timer display
+2. Include basic timer functionality (start, stop, reset)
+3. Display the current time in a large, easy-to-read format
+4. Support spacebar to start/stop the timer (similar to professional cube timers)
+5. Store and display recent solve times
+6. Calculate and show statistics like average of 5 and average of 12
+7. Generate and display random cube scramble algorithms
+8. Allow users to add penalties or mark solves as DNF (Did Not Finish)
+9. Save solve history to local storage so it persists between sessions
+
+Please structure the code with clean component organization and use modern React practices. Add comments to explain key functionality. The UI should be responsive and work well on both desktop and mobile devices.
+
+Once you've created the basic app, we can discuss potential enhancements like:
+- Adding different puzzle types (2x2, 4x4, etc.)
+- Implementing more advanced statistics
+- Creating a dark/light mode toggle
+- Adding visualization for scrambles
+
+Let's start with the core functionality and build from there.

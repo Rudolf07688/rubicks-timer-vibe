@@ -1,0 +1,3 @@
+# To Perplexity / Claude
+
+Please write a small prompt for Roo code using Claude asking it to write a small rubicks cube timer app in react
