@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Timer.css';
 
-const Timer = ({ onNewSolve, isRunning, setIsRunning }) => {
+const Timer = ({ onNewSolve, onTimeUpdate, isRunning, setIsRunning }) => {
   const [time, setTime] = useState(0);
   const [isReady, setIsReady] = useState(false);
   const timerRef = useRef(null);
@@ -30,6 +30,11 @@ const Timer = ({ onNewSolve, isRunning, setIsRunning }) => {
       if (startTimeRef.current) {
         const elapsedTime = Date.now() - startTimeRef.current;
         setTime(elapsedTime);
+        
+        // Pass the current time to the parent component for the 3D cube animation
+        if (onTimeUpdate) {
+          onTimeUpdate(elapsedTime);
+        }
       }
       
       // Only continue updating if the timer is still running

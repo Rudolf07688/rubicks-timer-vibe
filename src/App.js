@@ -5,10 +5,14 @@ import Scramble from './components/Scramble';
 import SolvesList from './components/SolvesList';
 import Statistics from './components/Statistics';
 import Controls from './components/Controls';
+import RubiksCube from './components/RubiksCube';
 
 function App() {
   // State for timer
   const [isRunning, setIsRunning] = useState(false);
+  
+  // State for current time (for the 3D cube animation)
+  const [currentTime, setCurrentTime] = useState(0);
   
   // State for solves
   const [solves, setSolves] = useState([]);
@@ -155,6 +159,11 @@ function App() {
     setCurrentScramble(scramble);
   };
   
+  // Handle time update (for the 3D cube animation)
+  const handleTimeUpdate = (time) => {
+    setCurrentTime(time);
+  };
+  
 
   return (
     <div className="App">
@@ -168,10 +177,16 @@ function App() {
           generateNewScramble={handleNewScramble} 
         />
         
-        <Timer 
-          onNewSolve={handleNewSolve} 
-          isRunning={isRunning} 
-          setIsRunning={setIsRunning} 
+        <RubiksCube
+          isRunning={isRunning}
+          time={currentTime}
+        />
+        
+        <Timer
+          onNewSolve={handleNewSolve}
+          onTimeUpdate={handleTimeUpdate}
+          isRunning={isRunning}
+          setIsRunning={setIsRunning}
         />
         
         <Controls 

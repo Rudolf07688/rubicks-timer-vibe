@@ -1,0 +1,1 @@
+Ok the app is working as expected. Let's move on and add an animation to the the UI. When the timer is running, I want to show a 3D rubicks cube slowly getting solved.
