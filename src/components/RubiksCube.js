@@ -169,11 +169,11 @@ const rotateFace = (cubies, axis, layer, direction) => {
   return cubies;
 };
 
-// Main Rubik's Cube component - shows a cube with the scramble applied and animates solving
-const RubiksCubeModel = ({ scramble, currentTime }) => {
+// Main Rubik's Cube component - shows a cube with the scramble applied
+const RubiksCubeModel = ({ scramble }) => {
   const groupRef = useRef();
   const [cubies, setCubies] = useState([]);
-  const [scrambledCubies, setScrambledCubies] = useState([]);
+  
   const [initialCubies, setInitialCubies] = useState([]);
   
   // Create the initial solved state of the cube
@@ -210,76 +210,14 @@ const RubiksCubeModel = ({ scramble, currentTime }) => {
     setInitialCubies(newCubies);
   }, []);
   
-  // Apply scramble to the cube and store the scrambled state
+  // Apply scramble to the cube
   useEffect(() => {
     if (initialCubies.length > 0) {
-      const scrambledState = applyScrambleToState(scramble, initialCubies);
-      setScrambledCubies(scrambledState);
-      setCubies(scrambledState);
+      const scrambledCubies = applyScrambleToState(scramble, initialCubies);
+      setCubies(scrambledCubies);
     }
   }, [scramble, initialCubies]);
   
-  // Animate solving the cube over time
-  useEffect(() => {
-    if (scrambledCubies.length > 0 && initialCubies.length > 0) {
-      // Only animate when the timer is running (currentTime > 0)
-      if (currentTime > 0) {
-        // Animation should take 30 seconds to complete
-        const animationDuration = 30000; // 30 seconds in milliseconds
-        
-        // Calculate progress (0 to 1) based on elapsed time
-        const progress = Math.min(currentTime / animationDuration, 1);
-        
-        // If we've reached the end of the animation, use the solved state
-        if (progress >= 1) {
-          setCubies(initialCubies);
-          return;
-        }
-        
-        // Interpolate between scrambled and solved states
-        const interpolatedCubies = interpolateCubieStates(scrambledCubies, initialCubies, progress);
-        setCubies(interpolatedCubies);
-      } else {
-        // Reset to scrambled state when timer is not running
-        setCubies(scrambledCubies);
-      }
-    }
-  }, [currentTime, scrambledCubies, initialCubies]);
-  
-  // Function to interpolate between scrambled and solved states
-  const interpolateCubieStates = (scrambledState, solvedState, progress) => {
-    if (!scrambledState.length || !solvedState.length) return scrambledState;
-    
-    return scrambledState.map((scrambledCubie, index) => {
-      const solvedCubie = solvedState.find(c => c.id === scrambledCubie.id);
-      if (!solvedCubie) return scrambledCubie;
-      
-      // Interpolate position
-      const interpolatedPosition = [
-        scrambledCubie.position[0] + (solvedCubie.position[0] - scrambledCubie.position[0]) * progress,
-        scrambledCubie.position[1] + (solvedCubie.position[1] - scrambledCubie.position[1]) * progress,
-        scrambledCubie.position[2] + (solvedCubie.position[2] - scrambledCubie.position[2]) * progress
-      ];
-      
-      // Interpolate colors - this is more complex as colors don't interpolate linearly
-      // For simplicity, we'll switch colors at specific progress thresholds
-      let interpolatedColors;
-      
-      if (progress < 0.5) {
-        // First half of animation: keep scrambled colors
-        interpolatedColors = [...scrambledCubie.colors];
-      } else {
-        // Second half of animation: switch to solved colors
-        interpolatedColors = [...solvedCubie.colors];
-      }
-      
-      return {
-        ...scrambledCubie,
-        position: interpolatedPosition,
-        colors: interpolatedColors
-      };
-    });
-  };
   
   // Rotate the entire cube slowly
   useFrame(() => {
@@ -303,7 +241,7 @@ const RubiksCubeModel = ({ scramble, currentTime }) => {
 };
 
 // Wrapper component with Canvas
-const RubiksCube = ({ isRunning, scramble, currentTime }) => {
+const RubiksCube = ({ isRunning, scramble }) => {
   // Determine the CSS class based on whether the timer is running
   const containerClass = isRunning
     ? "rubiks-cube-container visible"
@@ -314,7 +252,7 @@ const RubiksCube = ({ isRunning, scramble, currentTime }) => {
       <Canvas camera={{ position: [4, 4, 4], fov: 50 }}>
         <ambientLight intensity={0.7} />
         <pointLight position={[10, 10, 10]} intensity={1.5} />
-        <RubiksCubeModel scramble={scramble} currentTime={currentTime} />
+        <RubiksCubeModel scramble={scramble} />
         <OrbitControls enableZoom={false} enablePan={false} />
       </Canvas>
     </div>
