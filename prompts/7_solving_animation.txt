@@ -1,0 +1,1 @@
+I would like to please continue with our rubicks cube timer application. At the moment there is a 3d animation of the cube that shows the scramble state when the timer starts. I want to update this animation so that the rubicks cube slowly solves as the timer runs. The solving animation should take roughly 30 seconds to complete. 

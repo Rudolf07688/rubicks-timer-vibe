@@ -180,6 +180,7 @@ function App() {
         <RubiksCube
           isRunning={isRunning}
           scramble={currentScramble}
+          currentTime={currentTime}
         />
         
         <Timer
