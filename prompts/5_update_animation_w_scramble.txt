@@ -1,0 +1,1 @@
+Ok that's perfect. Now let's take it a step further and make it so that the cube in the animation is in the same position as the scramble shows.
