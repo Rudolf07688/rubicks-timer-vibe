@@ -179,7 +179,6 @@ function App() {
         
         <RubiksCube
           isRunning={isRunning}
-          time={currentTime}
         />
         
         <Timer

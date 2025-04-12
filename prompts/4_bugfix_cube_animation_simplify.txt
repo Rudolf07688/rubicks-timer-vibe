@@ -1,0 +1,2 @@
+Ok the basic functionality is there and looks great, however the actual animation of the 3d cube looks a bit strange - the colors of the cube is not very accurate. It also looks like the colors flash around and there are a lot of black cubes that doesn't make sense. 
+Can we change this feature to first only show a already solved cube slowing rotating (as it's already doing)?

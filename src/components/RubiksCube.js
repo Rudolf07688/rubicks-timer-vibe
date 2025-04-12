@@ -4,31 +4,21 @@ import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import './RubiksCube.css';
 
-// Colors for the Rubik's cube faces
+// Colors for the Rubik's cube faces - using more accurate colors
 const COLORS = {
   white: new THREE.Color('#FFFFFF'),
-  yellow: new THREE.Color('#FFFF00'),
-  green: new THREE.Color('#00FF00'),
-  blue: new THREE.Color('#0000FF'),
-  red: new THREE.Color('#FF0000'),
-  orange: new THREE.Color('#FFA500'),
-  black: new THREE.Color('#000000')
+  yellow: new THREE.Color('#FFDA00'),  // More accurate yellow
+  green: new THREE.Color('#009B48'),   // More accurate green
+  blue: new THREE.Color('#0045AD'),    // More accurate blue
+  red: new THREE.Color('#B90000'),     // More accurate red
+  orange: new THREE.Color('#FF5900'),  // More accurate orange
+  black: new THREE.Color('#1A1A1A')    // Slightly lighter black for better contrast
 };
 
 // Individual cubie component
-const Cubie = ({ position, colors, rotation }) => {
-  const mesh = useRef();
-  
-  useEffect(() => {
-    if (mesh.current && rotation) {
-      mesh.current.rotation.x = rotation.x || 0;
-      mesh.current.rotation.y = rotation.y || 0;
-      mesh.current.rotation.z = rotation.z || 0;
-    }
-  }, [rotation]);
-
+const Cubie = ({ position, colors }) => {
   return (
-    <mesh ref={mesh} position={position}>
+    <mesh position={position}>
       <boxGeometry args={[0.95, 0.95, 0.95]} />
       <meshStandardMaterial attach="material-0" color={colors[0]} /> {/* Right */}
       <meshStandardMaterial attach="material-1" color={colors[1]} /> {/* Left */}
@@ -40,13 +30,12 @@ const Cubie = ({ position, colors, rotation }) => {
   );
 };
 
-// Main Rubik's Cube component
-const RubiksCubeModel = ({ isRunning, progress }) => {
+// Main Rubik's Cube component - simplified to just show a solved cube
+const RubiksCubeModel = () => {
   const groupRef = useRef();
   const [cubies, setCubies] = useState([]);
-  const [animationStep, setAnimationStep] = useState(0);
   
-  // Create the initial state of the cube
+  // Create the solved state of the cube
   useEffect(() => {
     const newCubies = [];
     
@@ -57,7 +46,7 @@ const RubiksCubeModel = ({ isRunning, progress }) => {
           // Skip the center piece (internal)
           if (x === 0 && y === 0 && z === 0) continue;
           
-          // Determine colors for each face
+          // Determine colors for each face - for a solved cube
           const colors = [
             x === 1 ? COLORS.red : COLORS.black,      // Right face (x+)
             x === -1 ? COLORS.orange : COLORS.black,  // Left face (x-)
@@ -70,8 +59,7 @@ const RubiksCubeModel = ({ isRunning, progress }) => {
           newCubies.push({
             id: `${x},${y},${z}`,
             position: [x, y, z],
-            colors,
-            rotation: { x: 0, y: 0, z: 0 }
+            colors
           });
         }
       }
@@ -80,64 +68,6 @@ const RubiksCubeModel = ({ isRunning, progress }) => {
     setCubies(newCubies);
   }, []);
   
-  // Animation sequence - predefined moves to "solve" the cube
-  const animationSequence = [
-    // Each step is a move: { axis, layer, angle }
-    { axis: 'y', layer: 1, angle: Math.PI/2 },   // Top layer clockwise
-    { axis: 'x', layer: -1, angle: Math.PI/2 },  // Left layer up
-    { axis: 'z', layer: 1, angle: Math.PI/2 },   // Front layer clockwise
-    { axis: 'y', layer: -1, angle: Math.PI/2 },  // Bottom layer clockwise
-    { axis: 'x', layer: 1, angle: Math.PI/2 },   // Right layer up
-    { axis: 'z', layer: -1, angle: Math.PI/2 },  // Back layer clockwise
-    // Add more moves as needed
-  ];
-  
-  // Progress through animation based on timer progress
-  useEffect(() => {
-    if (isRunning && progress > 0) {
-      // Map progress (0-1) to animation steps
-      const step = Math.min(
-        Math.floor(progress * animationSequence.length),
-        animationSequence.length - 1
-      );
-      setAnimationStep(step);
-    } else if (!isRunning) {
-      // Reset animation when timer stops
-      setAnimationStep(0);
-    }
-  }, [isRunning, progress, animationSequence.length]);
-  
-  // Apply the current animation step
-  useEffect(() => {
-    if (animationStep >= 0 && animationStep < animationSequence.length) {
-      const move = animationSequence[animationStep];
-      
-      // Apply rotation to cubies in the specified layer
-      setCubies(prevCubies => 
-        prevCubies.map(cubie => {
-          const [x, y, z] = cubie.position;
-          
-          // Check if this cubie is in the layer being rotated
-          let inLayer = false;
-          if (move.axis === 'x' && x === move.layer) inLayer = true;
-          if (move.axis === 'y' && y === move.layer) inLayer = true;
-          if (move.axis === 'z' && z === move.layer) inLayer = true;
-          
-          if (inLayer) {
-            // Apply rotation based on the axis
-            const rotation = { ...cubie.rotation };
-            if (move.axis === 'x') rotation.x += move.angle;
-            if (move.axis === 'y') rotation.y += move.angle;
-            if (move.axis === 'z') rotation.z += move.angle;
-            
-            return { ...cubie, rotation };
-          }
-          
-          return cubie;
-        })
-      );
-    }
-  }, [animationStep, animationSequence]);
   
   // Rotate the entire cube slowly
   useFrame(() => {
@@ -150,11 +80,10 @@ const RubiksCubeModel = ({ isRunning, progress }) => {
   return (
     <group ref={groupRef}>
       {cubies.map(cubie => (
-        <Cubie 
+        <Cubie
           key={cubie.id}
           position={cubie.position}
           colors={cubie.colors}
-          rotation={cubie.rotation}
         />
       ))}
     </group>
@@ -162,11 +91,7 @@ const RubiksCubeModel = ({ isRunning, progress }) => {
 };
 
 // Wrapper component with Canvas
-const RubiksCube = ({ isRunning, time }) => {
-  // Calculate progress as a value between 0 and 1
-  // Assuming a typical solve might take around 20 seconds
-  const progress = Math.min(time / 20000, 1);
-  
+const RubiksCube = ({ isRunning }) => {
   // Determine the CSS class based on whether the timer is running
   const containerClass = isRunning
     ? "rubiks-cube-container visible"
@@ -175,9 +100,9 @@ const RubiksCube = ({ isRunning, time }) => {
   return (
     <div className={containerClass}>
       <Canvas camera={{ position: [4, 4, 4], fov: 50 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
-        <RubiksCubeModel isRunning={isRunning} progress={progress} />
+        <ambientLight intensity={0.7} />
+        <pointLight position={[10, 10, 10]} intensity={1.5} />
+        <RubiksCubeModel />
         <OrbitControls enableZoom={false} enablePan={false} />
       </Canvas>
     </div>
